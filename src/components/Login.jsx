@@ -1,15 +1,19 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router'
+import { API_BASE_URL } from '../utils/constants'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { addUser } from '../utils/userSlice'
 
 
 
 const Login = () => {
 const navigate = useNavigate()
 const [email, setEmail] = useState("aravinthraj42@gmail.com")
-const [password, setPassword] = useState("Aravinth@1234#")
+const [password, setPassword] = useState("Aravinth@1234#") 
 const [error, setError] = useState(null)
+const dispatch = useDispatch()
 
 const handlelogin =async () =>{
     try{
@@ -17,11 +21,11 @@ const handlelogin =async () =>{
             email,
             password
         }
-     const response = await axios.post('http://localhost:3000/login', payload, { withCredentials: true })
-  
+     const response = await axios.post(`${API_BASE_URL}/login`, payload, { withCredentials: true })
      if(response.data.status === 200){
         // const token = response.data.token;
         // cookieStore.set({ name: 'token', value: token, path: '/' });
+       dispatch(addUser(response.data.user))
        navigate("/")
      }else{
         setError("Invalid Credentials")
