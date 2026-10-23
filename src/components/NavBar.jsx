@@ -1,9 +1,11 @@
 import React from 'react'
+import { DEFAULT_AVATAR } from '../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { API_BASE_URL } from '../utils/constants'
 import { removeUser } from '../utils/userSlice'
+import { removeFeed } from '../utils/feedSlice'
 
 const closeDropdown = () => document.activeElement?.blur()
 
@@ -16,6 +18,7 @@ const NavBar = () => {
     try {
       await axios.post(`${API_BASE_URL}/logout`, {}, { withCredentials: true })
       dispatch(removeUser())
+      dispatch(removeFeed())
       navigate('/login')
     } catch (error) {
       console.error('Logout failed:', error)
@@ -41,14 +44,20 @@ const NavBar = () => {
                 <p className="font-semibold text-base-content">{user.firstName}</p>
               </div>
 
-              <div className="avatar">
-                <div className="w-10 rounded-full">
-                  <img
-                    alt="User profile"
-                    src={user.profileUrl || '/default-avatar.png'}
-                  />
-                </div>
+
+            <div className="avatar">
+              <div className="w-10 rounded-full">
+                <img
+                  alt="User profile"
+                  src={user.profileUrl || DEFAULT_AVATAR}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null // prevents an infinite loop
+                    e.currentTarget.src = DEFAULT_AVATAR
+                  }}
+                />
               </div>
+            </div>
             </div>
 
             <ul
