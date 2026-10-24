@@ -24,6 +24,7 @@ const Feed = () => {
   React.useEffect(() => {
     fetchFeedData();
   }, []);
+  if(!feed || !feed.data || feed.data.length === 0) return <><p>No New user found</p></>;
   return (
     <div className="flex justify-center my-10">
   {feed && (

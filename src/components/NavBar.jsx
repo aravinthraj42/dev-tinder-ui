@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { API_BASE_URL } from '../utils/constants'
-import { removeUser } from '../utils/userSlice'
+import { logout } from '../utils/userSlice'
 import { removeFeed } from '../utils/feedSlice'
 
 const closeDropdown = () => document.activeElement?.blur()
@@ -14,16 +14,21 @@ const NavBar = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
     try {
-      await axios.post(`${API_BASE_URL}/logout`, {}, { withCredentials: true })
-      dispatch(removeUser())
-      dispatch(removeFeed())
-      navigate('/login')
+        await axios.post(
+            `${API_BASE_URL}/logout`,
+            {},
+            { withCredentials: true }
+        );
+
+        dispatch(logout());
+        navigate('/login');
+
     } catch (error) {
-      console.error('Logout failed:', error)
+        console.error('Logout failed:', error);
     }
-  }
+};
 
   return (
     <div className="navbar bg-base-200 shadow-sm px-4">
@@ -68,8 +73,15 @@ const NavBar = () => {
                 <Link to="/profile" onClick={closeDropdown}>Profile</Link>
               </li>
               <li>
+                <Link to="/connections" onClick={closeDropdown}>Connections</Link>
+              </li>
+              <li>
                 <Link to="/settings" onClick={closeDropdown}>Settings</Link>
               </li>
+              <li>
+                <Link to="/request" onClick={closeDropdown}>Requests</Link>
+              </li>
+
               <li>
                 <button onClick={() => { closeDropdown(); handleLogout() }}>
                   Logout
